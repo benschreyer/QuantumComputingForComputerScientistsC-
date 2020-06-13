@@ -1,5 +1,5 @@
 // quantumdrills.cpp : This file contains the 'main' function. Program execution begins and ends there.
-// Quantum Computing For Computer Science Drills Benjamin Schreyer
+// Quantum Computing For Computer Science Drills Benjamin Schreyer Summer 2020
 
 #include <iostream>
 #include <string>
@@ -74,6 +74,7 @@ double complexModulus(  complex x)
 //Drill 1.3.1
   complex polarToCartesian(  polarComplex x)
 {
+	  //use trig
 	  complex n;
 	n.a = x.m;
 	n.b = 0;
@@ -85,6 +86,7 @@ double complexModulus(  complex x)
 //Drill 1.3.1
   polarComplex cartesianToPolar(  complex x)
 {
+	  //use inverse trig
 	polarComplex o;
 	o.m = complexModulus(x);
 	o.t = atan(x.b / x.a);
@@ -104,6 +106,7 @@ std::string complexToString(  complex x)
 //Drill 2.1.1/2.2.1
 complexMatrix & complexMatrixScalarMultiplication(float r, complexMatrix & m)
 {
+	//each element is assignedto itself times r
 	for (int i = 0; i < m.size(); i++)
 	{
 		for (int j = 0; j < m[0].size(); j++)
@@ -129,12 +132,15 @@ complexMatrix& printComplexMatrix(complexMatrix& m)
 }
 complexMatrix & complexMatrixAdditiveInverse(complexMatrix & m)
 {
+	//multiply each entry in m by -1
 	complexMatrixScalarMultiplication(-1.0, m);
 
 	return m;
 }
 complexMatrix & complexMatrixAddition(complexMatrix & m, complexMatrix & n, complexMatrix & res)
 {
+	//each entry of the output is the sum of the corresponding entrys in input matrices
+
 	//printComplexMatrix(m);
 //	std::cout << "\n\n";
 	//printComplexMatrix(n);
@@ -157,6 +163,8 @@ complexMatrix & complexMatrixAddition(complexMatrix & m, complexMatrix & n, comp
 //Drill 2.2.2/2.2.3
 complexMatrix& complexMatrixMultiplication(complexMatrix & a, complexMatrix & b, complexMatrix & out)
 {
+	//row by row column by column matrix multiplication, row is accessed at the first []
+
 	//std::cout << "\n\n";
 	//printComplexMatrix(a);
 	//std::cout << "\n\n";
@@ -187,6 +195,7 @@ complexMatrix& complexMatrixMultiplication(complexMatrix & a, complexMatrix & b,
 //Drill 2.4.1
 complexMatrix& complexMatrixConjugate(complexMatrix& a)
 {
+	//the conjugate of a complex number a + bi  is a - bi
 	//std::cout << a[0].size() << "   " << a.size();
 	for (int i = 0; i < a.size(); i++)
 	{
@@ -201,6 +210,7 @@ complexMatrix& complexMatrixConjugate(complexMatrix& a)
 }
 complexMatrix& copyMatrix(complexMatrix& a,complexMatrix& b)
 {
+	//copy a matrix
 	b.resize(a.size());
 	//std::cout << a.size();
 	for (int i = 0; i < a.size(); i++)
@@ -216,6 +226,7 @@ complexMatrix& copyMatrix(complexMatrix& a,complexMatrix& b)
 }
 complexMatrix& complexMatrixTranspose(complexMatrix& a)
 {
+	//entry i,j of the matrix is place at entry j,i of the output
 	int s = a[0].size();
 	int z = a.size();
 	complexMatrix b;
@@ -240,11 +251,12 @@ complexMatrix& complexMatrixTranspose(complexMatrix& a)
 }
 complexMatrix& complexMatrixAdjoint(complexMatrix& a)
 {
-
+	//take the transpose and adjoint of a, order doesnt matter
 	return complexMatrixTranspose(complexMatrixConjugate(a));
 }
 complex complexTrace(complexMatrix& m)
 {
+	//add all values in the matrix where i = j or Kroneker Delta i,j = 1
 	complex c = { 0.0,0.0 };
 	for (int i = 0; i < m.size() && i < m[0].size(); i++)
 	{
@@ -256,12 +268,14 @@ complex complexTrace(complexMatrix& m)
 
 complex complexMatrixInnerProduct(complexMatrix& a, complexMatrix& b)
 {
+	//inner product defined for complex matrices, vectors are matrices with width or height 1
 	complexMatrix g;
 	return complexTrace(complexMatrixMultiplication((a), complexMatrixAdjoint(b),g));
 }
 //Drill 2.4.2
 complex complexMatrixNorm(complexMatrix& a)
 {
+	//sqrt(a^2 + b^2 + c^2...) makes sense in 3R otherwise just a definition
 	complexMatrix d;
 	copyMatrix(a, d);
 	polarComplex c = cartesianToPolar(complexMatrixInnerProduct(a,d));
@@ -272,6 +286,7 @@ complex complexMatrixNorm(complexMatrix& a)
 //Drill 2.4.3
 complex complexMatrixDistance(complexMatrix& a, complexMatrix& b)
 {
+	//subtract matricesand the take norm to get distance
 	complexMatrix g;
 	complexMatrixAddition(a, complexMatrixAdditiveInverse(b), g);
 	
@@ -280,6 +295,7 @@ complex complexMatrixDistance(complexMatrix& a, complexMatrix& b)
 //Drill 2.6.1
 bool doubleEquality(double d1, double d2)
 {
+	//probably not neccesary at all just use ==
 	if (abs(d1 - d2) < 0.0001)
 	{
 		return true;
@@ -288,10 +304,12 @@ bool doubleEquality(double d1, double d2)
 }
 bool complexEquality(complex a, complex b)
 {
+	//equality for complex values
 	return doubleEquality(a.a,b.a) && doubleEquality(a.b, b.b);
 }
 bool complexMatrixEquality(complexMatrix& a, complexMatrix& b)
 {
+	//are all the entrys of two matrices the same?
 	if (a.size() == b.size() && b[0].size() == a[0].size())
 	{
 		for (int i = 0; i < a.size(); i++)
@@ -310,6 +328,7 @@ bool complexMatrixEquality(complexMatrix& a, complexMatrix& b)
 }
 bool complexMatrixIsHermetian(complexMatrix& m)
 {
+	//is the adjoint of a matrix itself?
 	complexMatrix g;
 	copyMatrix(m, g);
 	std::cout << "\n\n";
@@ -325,6 +344,7 @@ bool complexMatrixIsHermetian(complexMatrix& m)
 //Drill 2.6.2
 bool complexMatrixIsUnitary(complexMatrix& m)
 {
+	//matrix times adjoint equal to identity?
 	complexMatrix ma;
 	copyMatrix(m, ma);
 	complexMatrixAdjoint(ma);
@@ -360,6 +380,7 @@ bool complexMatrixIsUnitary(complexMatrix& m)
 }
 complexMatrix& complexMatrixTensorProduct(complexMatrix& a,complexMatrix& b,complexMatrix & out)
 {
+	//tensor of two matrices, scalar each matrix of b by corresponding value of a
 	out.resize(a.size() * b.size());
 	for(int i = 0;i < out.size();i++)
 	{
@@ -374,12 +395,15 @@ complexMatrix& complexMatrixTensorProduct(complexMatrix& a,complexMatrix& b,comp
 	}
 	return out;
 }
+//4.1.1
 double ketStateProbability(complexMatrix& ket, int x)
 {
+	//find the probability of finding the particle at discrete location x
 	return pow(complexModulus(ket[x][0]), 2) / pow(complexMatrixNorm(ket).a, 2);
 }
 complex ketStateTransitionAmplitude(complexMatrix& ketFrom, complexMatrix& ketToo)
 {
+	//amplitude of transition between two states
 	//complexToString();
 	complexMatrixAdjoint(ketToo);
 	complexMatrix t;
